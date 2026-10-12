@@ -1,0 +1,52 @@
+function draw(){
+for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+let t=map[y][x],xx=xS,yy=yS;
+ctx.fillStyle=t==='grass'?'#70ad4d':
+t==='tree'?'#286337':
+t==='stone'?'#8d969e':'#76502d';
+ctx.fillRect(xx,yy,S-1,S-1);
+if(t==='tree'){
+ctx.fillStyle='#754525';
+ctx.fillRect(xx+12,yy+15,8,16);
+ctx.fillStyle='#194b2b';
+ctx.fillRect(xx+4,yy+2,24,21);
+}
+if(t==='stone'){
+ctx.fillStyle='#c0c5c9';
+ctx.fillRect(xx+7,yy+7,18,18);
+}
+}
+ctx.fillStyle='#ffd34f';
+ctx.fillRect(p.xS+5,p.yS+5,22,22);
+ctx.fillStyle='#252525';
+ctx.fillRect(p.xS+9,p.yS+10,4,4);
+ctx.fillRect(p.xS+19,p.yS+10,4,4);
+document.getElementById('inv').textContent=
+'🪵 Wood '+bag.wood+' | 🪨 Stone '+bag.stone+
+' | 🌿 Grass '+bag.grass+' | 🫐 Berries '+bag.berries;
+}
+function say(t){
+document.getElementById('msg').textContent=t;
+}
+function move(dx,dy){
+p.x=Math.max(0,Math.min(W-1,p.x+dx));
+p.y=Math.max(0,Math.min(H-1,p.y+p.y+dy));
+draw();
+}
+function collect(){
+for(let [dx,dy] of [[0,0],[1,0],[-1,0],[0,1],[0,-1]]){
+let x=p.x+dx,y=p.y+dy;
+if(x<0||y<0||x>=W||y>=H)continue;
+let t=map[y][x];
+if(t==='tree'||t==='stone'||t==='grass'){
+bag[t==='tree'?'wood':t]++;
+map[y][x]='dirt';
+say('Collected '+(t==='tree'?'wood':t)+'!');
+draw();
+return;
+}
+}
+bag.berries++;
+say('Found berries!');
+draw();
+}
